@@ -39,15 +39,23 @@
             <div class="nav-wrapper teal darken-4 nav-padding-sides">
               <a href="/" class="brand-logo">Finch Collector</a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="/about">About</a></li>
-                <li><a href="/finches">View All Finches</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'index' %}">All Finches</a></li>
+                <li><a href="{% url 'foods_index' %}">View All Foods</a></li>
+                <li><a href="{% url 'finches_create' %}">Add a Finch</a></li>
+                <li><a href="{% url 'foods_create' %}">Add a Food</a></li>
               </ul>
             </div>
           </nav>
         </header>
         <main class="container">{% block content %} {% endblock %}</main>
         <footer class="page-footer teal darken-4">
-          <div class="right">&copy; 2023 Finch Collector &nbsp;</div>
+          <div class="center footer-inner">
+            &copy; 2023 Finch Collector &nbsp;
+            <a class="footer-txt" href="https://github.com/clareysean"
+              >My Github ꩜</a
+            >
+          </div>
         </footer>
       </body>
     </html>

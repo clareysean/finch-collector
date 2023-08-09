@@ -6,11 +6,24 @@ TIME_OF_DAY = (('M', 'Morning'), ('A', 'Afternoon'),
                ('E', 'Evening'), ('N', 'Night'))
 
 
+class Food(models.Model):
+    name = models.CharField(max_length=50)
+    details = models.TextField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('foods_detail', kwargs={'pk': self.id})
+
+
 class Finch(models.Model):
     name = models.CharField(max_length=100)
     threats = models.TextField(max_length=250)
     habitat = models.CharField(max_length=100)
     notes = models.TextField(max_length=250)
+
+    foods = models.ManyToManyField(Food)
 
     def __str__(self):
         return f'{self.name} ({self.id})'

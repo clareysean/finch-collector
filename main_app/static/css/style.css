@@ -23,3 +23,16 @@ footer.page-footer {
 .nav-padding-sides {
   padding: 0 20px 0 20px;
 }
+
+footer {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

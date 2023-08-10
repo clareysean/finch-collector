@@ -22,4 +22,6 @@ urlpatterns = [
     path('foods/create/', views.FoodCreate.as_view(), name='foods_create'),
     path('foods/<int:pk>/update/', views.FoodUpdate.as_view(), name='foods_update'),
     path('foods/<int:pk>/delete/', views.FoodDelete.as_view(), name='foods_delete'),
+    path('finches/<int:finch_id>/add_photo/',
+         views.add_photo, name='add_photo'),
 ]

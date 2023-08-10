@@ -32,6 +32,14 @@ class Finch(models.Model):
         return reverse('detail', kwargs={'finch_id': self.id})
 
 
+class Photo(models.Model):
+    url = models.CharField(max_length=200)
+    finch = models.ForeignKey(Finch, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Photo for finch_id: {self.finch_id} @{self.url}"
+
+
 class Sighting(models.Model):
     date = models.DateField('Sighting date')
     tod = models.CharField(

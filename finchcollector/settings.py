@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
+
+environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,6 +85,17 @@ DATABASES = {
         'NAME': 'finchcollector',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'neondb',
+#         'USER': f"{os.environ['NEON_DB_USER']}",
+#         'PASSWORD': f"{os.environ['NEON_DB_PW']}",
+#         'HOST': f"{os.environ['NEON_DB_HOST']}",
+#         'PORT': f"{os.environ['NEON_DB_PORT']}",
+#     }
+# }
 
 
 # Password validation

@@ -38,12 +38,19 @@
           <nav>
             <div class="nav-wrapper teal darken-4 nav-padding-sides">
               <a href="/" class="brand-logo">Finch Collector</a>
-              <ul id="nav-mobile" class="right hide-on-med-and-down">
+              <ul class="right">
+                <!-- changes below -->
                 <li><a href="{% url 'about' %}">About</a></li>
-                <li><a href="{% url 'index' %}">All Finches</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'foods_create' %}">Add a Food</a></li>
                 <li><a href="{% url 'foods_index' %}">View All Foods</a></li>
                 <li><a href="{% url 'finches_create' %}">Add a Finch</a></li>
-                <li><a href="{% url 'foods_create' %}">Add a Food</a></li>
+                <li><a href="{% url 'index' %}">View All Finches</a></li>
+                <li><a href="{% url 'logout' %}">Log Out</a></li>
+                {% else %}
+                <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                <li><a href="{% url 'login' %}">Log In</a></li>
+                {% endif %}
               </ul>
             </div>
           </nav>

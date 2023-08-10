@@ -4,6 +4,10 @@ import os
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Finch, Food, Photo
 from .forms import SightingForm
 
@@ -16,11 +20,13 @@ def about(request):
     return render(request, 'about.html')
 
 
+@login_required
 def finches_index(request):
-    finches = Finch.objects.all()
+    finches = Finch.objects.filter(user=request.user)
     return render(request, 'finches/index.html', {'finches': finches})
 
 
+@login_required
 def finches_detail(request, finch_id):
     finch = Finch.objects.get(id=finch_id)
     id_list = finch.foods.all().values_list('id')
@@ -34,6 +40,7 @@ def finches_detail(request, finch_id):
     })
 
 
+@login_required
 def add_sighting(request, finch_id):
     # create a ModelForm instance using the data in request.POST
     form = SightingForm(request.POST)
@@ -47,6 +54,7 @@ def add_sighting(request, finch_id):
     return redirect('detail', finch_id=finch_id)
 
 
+@login_required
 def add_photo(request, finch_id):
     # photo-file will be the "name" attribute on the <input type="file">
     photo_file = request.FILES.get('photo-file', None)
@@ -69,49 +77,75 @@ def add_photo(request, finch_id):
     return redirect('detail', finch_id=finch_id)
 
 
-class FinchCreate(CreateView):
+def signup(request):
+    error_message = ''
+    if request.method == 'POST':
+        # This is how to create a 'user' form object
+        # that includes the data from the browser
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            # This will add the user to the database
+            user = form.save()
+            # This is how we log a user in via code
+            login(request, user)
+            return redirect('index')
+        else:
+            error_message = 'Invalid sign up - try again'
+    # A bad POST or a GET request, so render signup.html with an empty form
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'registration/signup.html', context)
+
+
+class FinchCreate(LoginRequiredMixin, CreateView):
     model = Finch
     fields = ['name', 'threats', 'habitat', 'notes']
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-class FinchUpdate(UpdateView):
+
+class FinchUpdate(LoginRequiredMixin, UpdateView):
     model = Finch
     fields = ['habitat', 'notes', 'threats']
 
 
-class FinchDelete(DeleteView):
+class FinchDelete(LoginRequiredMixin, DeleteView):
     model = Finch
     success_url = '/finches'
 
 
-class FoodList(ListView):
+class FoodList(LoginRequiredMixin, ListView):
     model = Food
 
 
-class FoodDetail(DetailView):
+class FoodDetail(LoginRequiredMixin, DetailView):
     model = Food
 
 
-class FoodCreate(CreateView):
+class FoodCreate(LoginRequiredMixin, CreateView):
     model = Food
     fields = '__all__'
 
 
-class FoodUpdate(UpdateView):
+class FoodUpdate(LoginRequiredMixin, UpdateView):
     model = Food
     fields = ['name', 'details']
 
 
-class FoodDelete(DeleteView):
+class FoodDelete(LoginRequiredMixin, DeleteView):
     model = Food
     success_url = '/foods'
 
 
+@login_required
 def assoc_food(request, finch_id, food_id):
     Finch.objects.get(id=finch_id).foods.add(food_id)
     return redirect('detail', finch_id=finch_id)
 
 
+@login_required
 def unassoc_food(request, finch_id, food_id):
     Finch.objects.get(id=finch_id).foods.remove(food_id)
     return redirect('detail', finch_id=finch_id)
